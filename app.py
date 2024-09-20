@@ -2,6 +2,7 @@ import chainlit as cl
 import openai
 import os
 import base64
+from prompts import SYSTEM_PROMPT
 
 # OpenAI configuration
 api_key = os.getenv("OPENAI_API_KEY")
@@ -31,6 +32,8 @@ client = openai.AsyncClient(api_key=api_key, base_url=endpoint_url)
 async def on_message(message: cl.Message):
       # Maintain an array of messages in the user session
     message_history = cl.user_session.get("message_history", [])
+    if (not message_history or message_history[0].get("role") != "system"):
+        message_history.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
 
     message_history.append({"role": "user", "content": message.content})
 
