@@ -7,6 +7,9 @@ highlight any unique techniques or tips that make the recipe stand out.
 
 Follow the process below to summarize a recipe.
 
+Overall Summary:
+Provide a brief overview (3-5 sentences) of the recipe, highlighting its key features, flavors, and appeal.
+
 1. Recipe Title:
 What is the name of the dish?
 
@@ -24,9 +27,6 @@ How many servings does the recipe yield?
 
 6. Notes:
 Include any tips, variations, or special considerations.
-
-7. Overall Summary:
-Provide a brief overview (3-5 sentences) of the recipe, highlighting its key features, flavors, and appeal.
 
 
 """

@@ -4,6 +4,19 @@ import os
 import base64
 from prompts import SYSTEM_PROMPT
 
+from dotenv import load_dotenv
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import Settings
+from llama_index.core.callbacks import CallbackManager
+from langfuse.llama_index import LlamaIndexCallbackHandler
+
+# Load environment variables
+load_dotenv()
+
+# Set up tracing
+langfuse_callback_handler = LlamaIndexCallbackHandler()
+Settings.callback_manager = CallbackManager([langfuse_callback_handler])
+
 # OpenAI configuration
 api_key = os.getenv("OPENAI_API_KEY")
 endpoint_url = "https://api.openai.com/v1"
@@ -54,3 +67,10 @@ async def on_message(message: cl.Message):
     cl.user_session.set("message_history", message_history)
 
     # https://platform.openai.com/docs/guides/chat-completions/response-format
+
+
+@cl.on_chat_start
+async def main():
+    documents = SimpleDirectoryReader("data").load_data()
+    index = VectorStoreIndex.from_documents(documents)
+    langfuse_callback_handler.flush()
