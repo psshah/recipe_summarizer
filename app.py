@@ -75,8 +75,6 @@ async def fetch_nutrition_info(message_history):
     response_message = await client.chat.completions.create(messages=temp_message_history, **gen_kwargs)
 
     response_message = response_message.choices[0].message.content
-
-    #response_message = await generate_response(client, message_history, gen_kwargs)
     print("Nutrition response is " + response_message)
 
     data = json.loads(response_message)
@@ -92,11 +90,12 @@ async def fetch_nutrition_info(message_history):
             print("Missing recipe name or ingredients for get_nutrition_info")
 
 @cl.on_message
+@observe
 async def on_message(message: cl.Message):
-      # Maintain an array of messages in the user session
+    # Maintain an array of messages in the user session
     message_history = cl.user_session.get("message_history", [])
-    if (not message_history or message_history[0].get("role") != "system"):
-        message_history.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
+    #if (not message_history or message_history[0].get("role") != "system"):
+    #    message_history.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
 
     message_history.append({"role": "user", "content": message.content})
 
@@ -110,12 +109,12 @@ async def on_message(message: cl.Message):
 
     # https://platform.openai.com/docs/guides/chat-completions/response-format
 
-
+@observe
 @cl.on_chat_start
 async def main():
-    #documents = SimpleDirectoryReader("data").load_data()
-    #index = VectorStoreIndex.from_documents(documents)
-    #langfuse_callback_handler.flush()
+    documents = SimpleDirectoryReader("data").load_data()
+    index = VectorStoreIndex.from_documents(documents)
+    langfuse_callback_handler.flush()
 
     message_history = [{"role": "system", "content": SYSTEM_PROMPT}]
     cl.user_session.set("message_history", message_history)
