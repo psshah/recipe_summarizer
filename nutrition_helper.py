@@ -53,7 +53,6 @@ def get_nutrition_info(recipe_name, ingredients):
 
     for key in total_nutrients.keys():
         if key in keys_of_interest:
-            print(f"- {key}")
             selected_nutrients[key] = total_nutrients[key]
 
     formatted_nutrition_info = "The Edamam API returned nutrition info for " + recipe_name + ":\n"
@@ -79,6 +78,7 @@ def get_nutrition_info(recipe_name, ingredients):
     return nutrition_info
 """
 
-ingredients = ["1 cup of flour", "1 cup of sugar", "1 cup of water"]
+"""ingredients = ["1 cup of flour", "1 cup of sugar", "1 cup of water"]
 nutrition_info = get_nutrition_info("cake batter", ingredients)
 print(nutrition_info)
+"""

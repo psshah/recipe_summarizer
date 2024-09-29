@@ -27,6 +27,22 @@ How many servings does the recipe yield?
 
 6. Notes:
 Include any tips, variations, or special considerations.
+"""
 
+NUTRITION_SYSTEM_PROMPT = """\
+Based on the conversation, determine if the topic is about a specific recipe.
+Determine if the user is asking a question about the nutritional value of the recipe.
+Determine if the nutrition info for that recipe has already been provided in the conversation. If so, do not fetch nutrition info.
 
+Your only role is to evaluate the conversation, and decide whether to fetch nutrition info.
+
+Output the recipe name, ingredients, and a boolean to fetch nutrition info in JSON format, and your
+rationale. Do not output as a code block.
+
+{
+    "recipe_name": "title",
+    "ingredients": ["ingredient1", "ingredient2"],
+    "fetch_nutrition_info": true
+    "rationale": "reasoning"
+}
 """
