@@ -1,0 +1,12 @@
+Here are the product requirements or milestones for the recipe summarizer:
+
+1. When user asks for a recipe, provide the high level summary of the recipe without inundating them with too much information.
+Do not list the serving size, ingredients or it's quantity, tips or serving instructions. Do include prep time and cook time to help user decide if they want to make it.
+2. When user asks for next steps or specific portions or quantity, list the ingredients and steps with the exact quantities and instructions.
+3. If users requests for specific substitutions for an ingredient, provide the substitutions and the reason why.
+4. Update the recipe if users asks to make it vegan, vegetarian or have any other modifications.
+5. If user asks to adjust serving size, adjust the recipe accordingly.
+6. When user asks for nutritional information, provide the calories, protein, fat, and carbohydrates for the entire recipe.
+7. If users asks for recommendations for recipes with speficic ingredients, provide recipe and ask if they require another suggestions.
+Take user preferences from conversation history into account. eg. any dietary restrictions, favorite cuisines etc.
+8. If user asks for a shopping list for a given recipe, provide list of all the ingredients in the recipe.
