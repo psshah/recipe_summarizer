@@ -20,7 +20,7 @@ What is the total time required for preparation and cooking?
 How many servings does the recipe yield?
 
 4. Instructions:
-High level outline of the cooking process.
+High level outline of the cooking process without specific quantities   .
 
 If the user only asks for ingredients and it's quantities, only provide the ingredients list and quantities. Mention serving size as well.
 
@@ -43,6 +43,12 @@ Provide a concise step-by-step outline of the cooking process.
 
 6. Notes:
 Include any tips, variations, or special considerations.
+
+If the user asks to suggest a recipe with specific ingredients, use the following function call format to fetch recipes:
+{"function": "get_recipe_by_ingredients", "parameters": {"ingredients": "ingredients"}}
+
+After receiving the results of a function call, incorporate that information into your response to the user.
+
 """
 
 NUTRITION_SYSTEM_PROMPT = """\

@@ -6,7 +6,7 @@ This Chainlit-based application serves as a recipe summarizer, leveraging variou
 
 ## Features
 
-- **Recipe summarizer**: Given a link, summarize recipes from different blogs.
+- **Recipe summarizer**: Give summary of recipes with high-level instructions to not overwhelm the user.
 - **Customize recipes**: Automatically adjust proportions, adapt metric system, create substitutions eg. vegetarian options.
 - **Create recipes**: Create or find recipe given an ingredient list.
 - **Adaptive Responses**: Uses conversation history to provide context-aware responses.

@@ -4,7 +4,8 @@ import os
 import base64
 from prompts import SYSTEM_PROMPT, NUTRITION_SYSTEM_PROMPT
 import json
-from nutrition_helper import get_nutrition_info
+from nutrition_helper import get_nutrition_info, get_recipe_by_ingredients
+import re
 
 from dotenv import load_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
@@ -67,6 +68,28 @@ async def generate_response(client, message_history, gen_kwargs):
 
     return response_message
 
+def parse_json(response_message):
+    try:
+        json_pattern = r'\{[^{}]*\}'
+
+        # Find the JSON object in the input string
+        match = re.search(json_pattern, response_message)
+        if match:
+            json_string = match.group()
+            print("json is " + json_string)
+
+            # Parse the JSON string
+            data = json.loads(json_string)
+            print(data)
+            return data
+        else:
+            print("No JSON object found in the input string")
+    except json.JSONDecodeError:
+        print("Error parsing JSON")
+    except KeyError:
+        print("Required keys not found in the JSON data")
+    return None
+
 async def fetch_nutrition_info(message_history):
     temp_message_history = message_history.copy()
     temp_message_history[0] = {"role": "system", "content": NUTRITION_SYSTEM_PROMPT}
@@ -99,7 +122,7 @@ async def on_message(message: cl.Message):
 
     message_history.append({"role": "user", "content": message.content})
 
-    await fetch_nutrition_info(message_history)
+    #await fetch_nutrition_info(message_history)
 
     response_message = await generate_response(client, message_history, gen_kwargs)
 
@@ -108,6 +131,30 @@ async def on_message(message: cl.Message):
     cl.user_session.set("message_history", message_history)
 
     # https://platform.openai.com/docs/guides/chat-completions/response-format
+
+    # Check if the response contains function call
+    print("checking function calling")
+    print(response_message.content)
+    function_called = True
+    while function_called:
+        if "get_recipe_by_ingredients" in response_message.content:
+            print("function called")
+            function_called = True
+            # Extract ingredients from the parameters
+            print("parsing json")
+            data = parse_json(response_message.content)
+            if data:
+                ingredients = data['ingredients']
+                print(f"Ingredients: {ingredients}")
+                if ingredients:
+                    result = get_recipe_by_ingredients(ingredients)
+                    message_history.append({"role": "user", "content": result})
+                    response_message = await generate_response(client, message_history, gen_kwargs)
+                else:
+                    print("Missing ingredients for get_recipe_by_ingredients")
+        else:
+            function_called = False
+
 
 @observe
 @cl.on_chat_start

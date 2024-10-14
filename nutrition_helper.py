@@ -9,6 +9,7 @@ load_dotenv()
 # Get the API credentials from environment variables
 app_id = os.getenv('EDAMAM_APP_ID')
 app_key = os.getenv('EDAMAM_APP_KEY')
+spoonacular_api_key=os.getenv('SPOONACULAR_API_KEY')
 
 def get_nutrition_info(recipe_name, ingredients):
     if not app_id or not app_key:
@@ -67,18 +68,33 @@ def get_nutrition_info(recipe_name, ingredients):
 
     return formatted_nutrition_info
 
-"""
-    nutrition_info = f"Nutrition information for {recipe_name}:\n"
+def get_recipe_by_ingredients(ingredients_list):
+    print("Called get_recipe_by_ingredients")
+    print(ingredients_list)
+    if not spoonacular_api_key:
+        raise ValueError("SPOONACULAR_API_KEYmust be set in environment variables")
 
-    for ingredient in ingredients:
-        # Here you would typically make an API call or lookup nutrition data
-        # for each ingredient. For now, we'll just add a placeholder.
-        nutrition_info += f"- {ingredient}: Calories: N/A, Protein: N/A, Fat: N/A\n"
+    ingredients_list = ingredients_list.replace(" ", "")
+    url = f"https://api.spoonacular.com/recipes/findByIngredients?ingredients={ingredients_list}&apiKey={spoonacular_api_key}&number=3&limitLicense=true&ranking=1&ignorePantry=false"
+    print(url)
 
-    return nutrition_info
-"""
+    # Make the GET request
+    response = requests.get(url)
 
-"""ingredients = ["1 cup of flour", "1 cup of sugar", "1 cup of water"]
-nutrition_info = get_nutrition_info("cake batter", ingredients)
-print(nutrition_info)
-"""
+    # Check if the request was successful
+    if response.status_code != 200:
+        return f"Error fetching data: {response.status_code} - {response.reason}"
+
+    data = response.json()
+    #print("Converted to json")
+    #print(data)
+
+    recipe_names = [recipe['title'] for recipe in data]
+    print(recipe_names)
+
+    # Create a formatted string
+    formatted_response = "The Spoonacular API returned recipe names for " + ingredients_list + ":\n"
+    formatted_names = ', '.join(recipe_names)
+    print(formatted_response + formatted_names)
+
+    return formatted_response + formatted_names
