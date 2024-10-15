@@ -63,14 +63,14 @@ def get_nutrition_info(recipe_name, ingredients):
         quantity = value['quantity']
         unit = value['unit']
         formatted_nutrition_info += (
-            f"* {quantity}: {unit}\n"
+            f"* {key}: {quantity} {unit}\n"
         )
 
     return formatted_nutrition_info
 
 def get_recipe_by_ingredients(ingredients_list):
     print("Called get_recipe_by_ingredients")
-    print(ingredients_list)
+    #print(ingredients_list)
     if not spoonacular_api_key:
         raise ValueError("SPOONACULAR_API_KEYmust be set in environment variables")
 
@@ -86,11 +86,8 @@ def get_recipe_by_ingredients(ingredients_list):
         return f"Error fetching data: {response.status_code} - {response.reason}"
 
     data = response.json()
-    #print("Converted to json")
-    #print(data)
-
     recipe_names = [recipe['title'] for recipe in data]
-    print(recipe_names)
+    #print(recipe_names)
 
     # Create a formatted string
     formatted_response = "The Spoonacular API returned recipe names for " + ingredients_list + ":\n"

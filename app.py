@@ -76,7 +76,7 @@ def parse_json(response_message):
         match = re.search(json_pattern, response_message)
         if match:
             json_string = match.group()
-            print("json is " + json_string)
+            #print("json is " + json_string)
 
             # Parse the JSON string
             data = json.loads(json_string)
@@ -102,15 +102,19 @@ async def fetch_nutrition_info(message_history):
 
     data = json.loads(response_message)
     if data:
-        recipe_name = data['recipe_name']
-        ingredients = data['ingredients']
-        print(f"recipe name: {recipe_name} ingredients: {ingredients}")
-        if recipe_name and ingredients:
-            nutrition_info = get_nutrition_info(recipe_name, ingredients)
-            print(nutrition_info)
-            message_history.append({"role": "system", "content": rf"CONTEXT: {nutrition_info}"})
+        fetch_nutrition_info = data['fetch_nutrition_info']
+        if fetch_nutrition_info:
+            recipe_name = data['recipe_name']
+            ingredients = data['ingredients']
+            print(f"recipe name: {recipe_name} ingredients: {ingredients}")
+            if recipe_name and ingredients:
+                nutrition_info = get_nutrition_info(recipe_name, ingredients)
+                print(nutrition_info)
+                message_history.append({"role": "system", "content": rf"CONTEXT: {nutrition_info}"})
+            else:
+                print("Missing recipe name or ingredients for get_nutrition_info")
         else:
-            print("Missing recipe name or ingredients for get_nutrition_info")
+            print("User did not ask for nutrition info")
 
 @cl.on_message
 @observe
@@ -122,7 +126,7 @@ async def on_message(message: cl.Message):
 
     message_history.append({"role": "user", "content": message.content})
 
-    #await fetch_nutrition_info(message_history)
+    await fetch_nutrition_info(message_history)
 
     response_message = await generate_response(client, message_history, gen_kwargs)
 
@@ -133,15 +137,12 @@ async def on_message(message: cl.Message):
     # https://platform.openai.com/docs/guides/chat-completions/response-format
 
     # Check if the response contains function call
-    print("checking function calling")
     print(response_message.content)
     function_called = True
     while function_called:
         if "get_recipe_by_ingredients" in response_message.content:
-            print("function called")
             function_called = True
             # Extract ingredients from the parameters
-            print("parsing json")
             data = parse_json(response_message.content)
             if data:
                 ingredients = data['ingredients']
